@@ -55,53 +55,51 @@ class YesNo(str, Enum):
 class FilterItem(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    field: FieldName = Field(..., alias="Field")
-    operator: FilterOperator = Field(..., alias="Operator")
-    values: list[str] = Field(..., alias="Values")
+    field: FieldName = Field(..., serialization_alias="Field")
+    operator: FilterOperator = Field(..., serialization_alias="Operator")
+    values: list[str] = Field(..., serialization_alias="Values")
 
 
 class SelectionCriteria(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    date_from: Optional[str] = Field(None, alias="DateFrom")
-    date_to: Optional[str] = Field(None, alias="DateTo")
-    filter: Optional[list[FilterItem]] = Field(None, alias="Filter")
+    date_from: Optional[str] = Field(None, serialization_alias="DateFrom")
+    date_to: Optional[str] = Field(None, serialization_alias="DateTo")
+    filter: Optional[list[FilterItem]] = Field(None, serialization_alias="Filter")
 
 
 class Page(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    limit: int = Field(..., alias="Limit")
-    offset: Optional[int] = Field(None, alias="Offset")
+    limit: int = Field(..., serialization_alias="Limit")
+    offset: Optional[int] = Field(None, serialization_alias="Offset")
 
 
 class OrderBy(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    field: FieldName = Field(..., alias="Field")
-    sort_order: Optional[SortOrder] = Field(None, alias="SortOrder")
+    field: FieldName = Field(..., serialization_alias="Field")
+    sort_order: Optional[SortOrder] = Field(None, serialization_alias="SortOrder")
 
 
 class ReportDefinition(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    selection_criteria: SelectionCriteria = Field(..., alias="SelectionCriteria")
-    field_names: list[FieldName] = Field(..., alias="FieldNames")
-    report_name: str = Field(..., alias="ReportName")
-    report_type: ReportType = Field(..., alias="ReportType")
-    date_range_type: DateRangeType = Field(..., alias="DateRangeType")
-    format: Literal["TSV"] = Field("TSV", alias="Format")
-    include_vat: YesNo = Field(YesNo.NO, alias="IncludeVAT")
-    include_discount: YesNo = Field(YesNo.NO, alias="IncludeDiscount")
-    goals: Optional[list[str]] = Field(None, alias="Goals")
-    attribution_models: Optional[list[AttributionModel]] = Field(None, alias="AttributionModels")
-    page: Optional[Page] = Field(None, alias="Page")
-    order_by: Optional[list[OrderBy]] = Field(None, alias="OrderBy")
+    selection_criteria: SelectionCriteria = Field(..., serialization_alias="SelectionCriteria")
+    field_names: list[FieldName] = Field(..., serialization_alias="FieldNames")
+    report_name: str = Field(..., serialization_alias="ReportName")
+    report_type: ReportType = Field(..., serialization_alias="ReportType")
+    date_range_type: DateRangeType = Field(..., serialization_alias="DateRangeType")
+    format: Literal["TSV"] = Field("TSV", serialization_alias="Format")
+    include_vat: YesNo = Field(YesNo.NO, serialization_alias="IncludeVAT")
+    include_discount: YesNo = Field(YesNo.NO, serialization_alias="IncludeDiscount")
+    goals: Optional[list[str]] = Field(None, serialization_alias="Goals")
+    attribution_models: Optional[list[AttributionModel]] = Field(None, serialization_alias="AttributionModels")
+    page: Optional[Page] = Field(None, serialization_alias="Page")
+    order_by: Optional[list[OrderBy]] = Field(None, serialization_alias="OrderBy")
 
 
 class ReportRequest(BaseModel):
     """Тело запроса к API отчётов Яндекс.Директ."""
 
-    model_config = ConfigDict(populate_by_name=True)
-
-    params: ReportDefinition = Field(..., alias="params")
+    params: ReportDefinition

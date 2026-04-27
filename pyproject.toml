@@ -16,11 +16,19 @@ dependencies = [
 dev = [
     "ruff",
     "pytest",
+    "pytest-asyncio",
     "model-bakery",
 ]
 
+[tool.pytest.ini_options]
+addopts = "-m 'not integration'"
+asyncio_mode = "auto"
+markers = [
+    "integration: tests against real Yandex Direct sandbox API (deselected by default)",
+]
+
 [tool.uv]
-package = false
+package = true
 
 [[tool.uv.index]]
 name = "pypi"

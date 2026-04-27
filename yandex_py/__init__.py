@@ -1,7 +1,7 @@
-from .request_sender.request_sender import RequestSender
+from .request_sender.request_sender import HTTPRequestSender
 from .reports.report import YDirectReport
 
 __all__ = [
-    "RequestSender",
+    "HTTPRequestSender",
     "YDirectReport",
 ]

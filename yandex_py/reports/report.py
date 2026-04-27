@@ -5,14 +5,14 @@ from yandex_py.constants import REPORTS_SERVICE
 from yandex_py.reports.parser import ReportRow, parse_report
 from yandex_py.reports.schemas.headers import AcceptLanguage, ProcessingMode
 from yandex_py.reports.schemas.request import ReportRequest
-from yandex_py.request_sender.request_sender import RequestSender
+from yandex_py.request_sender.request_sender import HTTPRequestSender 
 
 
 class YDirectReport:
     def __init__(
         self,
         request: ReportRequest,
-        sender: RequestSender,
+        sender: HTTPRequestSender,
         processing_mode: ProcessingMode = ProcessingMode.auto,
         accept_language: AcceptLanguage = AcceptLanguage.ru,
         max_retries: int = 100,
@@ -38,7 +38,7 @@ class YDirectReport:
             return parse_report(response.text)
         if response.status_code in (201, 202):
             return None
-        response.raise_for_status()
+        raise RuntimeError(f"HTTP {response.status_code}: {response.text}")
 
     async def fetch(self) -> list[ReportRow]:
         body = self._body()

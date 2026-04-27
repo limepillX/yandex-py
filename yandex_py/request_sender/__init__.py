@@ -1,3 +1,3 @@
-from .request_sender import RequestSender
+from .request_sender import HTTPRequestSender
 
-__all__ = ["RequestSender"]
+__all__ = ["HTTPRequestSender"]

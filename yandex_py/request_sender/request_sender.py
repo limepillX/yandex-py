@@ -3,7 +3,7 @@ import httpx
 from yandex_py.constants import BASE_URL
 
 
-class RequestSender:
+class HTTPRequestSender:
     def __init__(
         self,
         token: str,
@@ -53,13 +53,13 @@ class RequestSender:
     async def aclose(self) -> None:
         await self._async_client.aclose()
 
-    def __enter__(self) -> "RequestSender":
+    def __enter__(self) -> "HTTPRequestSender":
         return self
 
     def __exit__(self, *args) -> None:
         self.close()
 
-    async def __aenter__(self) -> "RequestSender":
+    async def __aenter__(self) -> "HTTPRequestSender":
         return self
 
     async def __aexit__(self, *args) -> None:
