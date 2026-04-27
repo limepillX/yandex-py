@@ -1,0 +1,27 @@
+[project]
+name = "yandex_py"
+description = "Yandex API wrapper for Python built on top of httpx and pydantic"
+authors = [
+    { name = "Fiodar Y.", email = "hi@fiodar.dev" },
+]
+
+version = "0.0.1"
+requires-python = "~=3.13"
+dependencies = [
+    "httpx>=0.28.1",
+    "pydantic",
+]
+
+[dependency-groups]
+dev = [
+    "ruff",
+    "pytest",
+    "model-bakery",
+]
+
+[tool.uv]
+package = false
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
