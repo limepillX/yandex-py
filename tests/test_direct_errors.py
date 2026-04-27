@@ -8,8 +8,8 @@ from yandex_py.core.errors import (
     ServerError,
     YandexTimeoutError,
 )
-from yandex_py.reports.report import YDirectReport
-from yandex_py.reports.types import (
+from yandex_py.direct.reports import YDirectReport
+from yandex_py.direct.reports.types import (
     DateRangeType,
     FieldName,
     Page,
@@ -18,7 +18,7 @@ from yandex_py.reports.types import (
     ReportType,
     SelectionCriteria,
 )
-from yandex_py.request_sender.request_sender import HTTPRequestSender
+from yandex_py.direct.request_sender import HTTPRequestSender
 
 
 def make_request() -> ReportRequest:

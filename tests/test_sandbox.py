@@ -2,9 +2,10 @@ import os
 
 import pytest
 
-from yandex_py import HTTPRequestSender, YDirectReport
 from yandex_py.constants import SANDBOX_URL
-from yandex_py.reports.types import (
+from yandex_py.direct import HTTPRequestSender
+from yandex_py.direct.reports import YDirectReport
+from yandex_py.direct.reports.types import (
     DateRangeType,
     FieldName,
     Page,

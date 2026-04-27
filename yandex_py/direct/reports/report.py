@@ -11,10 +11,10 @@ from yandex_py.core.errors import (
     YandexAPIError,
     YandexTimeoutError,
 )
-from yandex_py.reports.parser import ReportRow, parse_report
-from yandex_py.reports.types.headers import AcceptLanguage, ProcessingMode
-from yandex_py.reports.types.request import ReportRequest
-from yandex_py.request_sender.request_sender import HTTPRequestSender
+from yandex_py.direct.reports.parser import ReportRow, parse_report
+from yandex_py.direct.reports.types.headers import AcceptLanguage, ProcessingMode
+from yandex_py.direct.reports.types.request import ReportRequest
+from yandex_py.direct.request_sender import HTTPRequestSender
 
 
 class YDirectReport:

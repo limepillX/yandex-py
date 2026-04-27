@@ -1,6 +1,8 @@
 # yandex_py
 
-Python-клиент для Yandex Direct API на базе httpx и pydantic.
+Python-клиент для Yandex API на базе httpx и pydantic.
+
+Сейчас библиотека организована по продуктам. Текущая реализация покрывает `yandex_py.direct`.
 
 ## Установка
 
@@ -11,8 +13,9 @@ pip install yandex_py
 ## Использование
 
 ```python
-from yandex_py import HTTPRequestSender, YDirectReport
-from yandex_py.reports.schemas import (
+from yandex_py.direct import HTTPRequestSender
+from yandex_py.direct.reports import YDirectReport
+from yandex_py.direct.reports.types import (
     DateRangeType, FieldName, Page,
     ReportDefinition, ReportRequest, ReportType, SelectionCriteria,
 )

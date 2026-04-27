@@ -3,8 +3,8 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from yandex_py.reports.types.fields import FieldName
-from yandex_py.reports.types.time_period import DateRangeType
+from yandex_py.direct.reports.types.fields import FieldName
+from yandex_py.direct.reports.types.time_period import DateRangeType
 
 
 class ReportType(str, Enum):
@@ -32,13 +32,13 @@ class FilterOperator(str, Enum):
 
 
 class AttributionModel(str, Enum):
-    FC = "FC"          # first click
-    LC = "LC"          # last click
-    LSC = "LSC"        # last significant click
-    LYDC = "LYDC"      # last Yandex Direct click
-    FCCD = "FCCD"      # first click cross-device
-    LSCCD = "LSCCD"    # last significant click cross-device
-    LYDCCD = "LYDCCD"  # last Yandex Direct click cross-device
+    FC = "FC"
+    LC = "LC"
+    LSC = "LSC"
+    LYDC = "LYDC"
+    FCCD = "FCCD"
+    LSCCD = "LSCCD"
+    LYDCCD = "LYDCCD"
     AUTO = "AUTO"
 
 
