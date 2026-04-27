@@ -64,6 +64,10 @@ class RateLimitError(YandexAPIError):
     pass
 
 
+class NotFoundError(YandexAPIError):
+    pass
+
+
 class RequestValidationError(YandexAPIError):
     pass
 

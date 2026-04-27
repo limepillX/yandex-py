@@ -11,13 +11,14 @@ class HTTPTransport:
         *,
         base_url: str,
         auth_headers: Mapping[str, str] | None = None,
+        timeout: float | httpx.Timeout = 30.0,
         client: httpx.Client | None = None,
         async_client: httpx.AsyncClient | None = None,
     ):
         self._base_url = base_url.rstrip("/")
         self._auth_headers = dict(auth_headers or {})
-        self._client = client or httpx.Client()
-        self._async_client = async_client or httpx.AsyncClient()
+        self._client = client or httpx.Client(timeout=timeout)
+        self._async_client = async_client or httpx.AsyncClient(timeout=timeout)
 
     def _url(self, path: str) -> str:
         if path.startswith(("http://", "https://")):

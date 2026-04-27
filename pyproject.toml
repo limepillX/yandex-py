@@ -5,7 +5,7 @@ authors = [
     { name = "Fiodar Y.", email = "hi@fiodar.dev" },
 ]
 
-version = "0.0.3"
+version = "0.0.4"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
