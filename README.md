@@ -13,14 +13,11 @@ pip install yandex_py
 ## Использование
 
 ```python
-from yandex_py.direct import HTTPRequestSender
-from yandex_py.direct.reports import YDirectReport
+from yandex_py.direct import DirectClient
 from yandex_py.direct.reports.types import (
     DateRangeType, FieldName, Page,
     ReportDefinition, ReportRequest, ReportType, SelectionCriteria,
 )
-
-sender = HTTPRequestSender(token="your_token", client_login="your_login")
 
 request = ReportRequest(
     params=ReportDefinition(
@@ -33,7 +30,6 @@ request = ReportRequest(
     )
 )
 
-async with sender:
-    report = YDirectReport(request=request, sender=sender)
-    rows = await report.fetch()
+async with DirectClient(token="your_token", client_login="your_login") as client:
+    rows = await client.reports.fetch(request)
 ```

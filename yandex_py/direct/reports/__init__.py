@@ -1,8 +1,8 @@
+from .client import DirectReportsAPI
 from .parser import ReportRow, parse_report
-from .report import YDirectReport
 
 __all__ = [
-    "YDirectReport",
+    "DirectReportsAPI",
     "parse_report",
     "ReportRow",
 ]

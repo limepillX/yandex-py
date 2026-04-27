@@ -8,7 +8,7 @@ from yandex_py.core.errors import (
     ServerError,
     YandexTimeoutError,
 )
-from yandex_py.direct.reports import YDirectReport
+from yandex_py.direct import DirectClient
 from yandex_py.direct.reports.types import (
     DateRangeType,
     FieldName,
@@ -18,7 +18,6 @@ from yandex_py.direct.reports.types import (
     ReportType,
     SelectionCriteria,
 )
-from yandex_py.direct.request_sender import HTTPRequestSender
 
 
 def make_request() -> ReportRequest:
@@ -34,7 +33,7 @@ def make_request() -> ReportRequest:
     )
 
 
-def make_sender(status_code: int, *, json_body: dict | None = None, text: str = "") -> HTTPRequestSender:
+def make_client(status_code: int, *, json_body: dict | None = None, text: str = "") -> DirectClient:
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(
             status_code,
@@ -44,7 +43,7 @@ def make_sender(status_code: int, *, json_body: dict | None = None, text: str = 
         )
 
     transport = httpx.MockTransport(handler)
-    return HTTPRequestSender(
+    return DirectClient(
         token="token",
         client_login="login",
         client=httpx.Client(transport=transport),
@@ -62,8 +61,8 @@ def make_sender(status_code: int, *, json_body: dict | None = None, text: str = 
         (500, ServerError),
     ],
 )
-def test_direct_report_maps_http_errors(status_code, expected_error):
-    sender = make_sender(
+def test_direct_reports_api_maps_http_errors(status_code, expected_error):
+    client = make_client(
         status_code,
         json_body={
             "error": {
@@ -73,32 +72,30 @@ def test_direct_report_maps_http_errors(status_code, expected_error):
             }
         },
     )
-    report = YDirectReport(request=make_request(), sender=sender)
 
     with pytest.raises(expected_error) as exc_info:
-        report.fetch_sync()
+        client.reports.fetch_sync(make_request())
 
     assert exc_info.value.product == "direct"
     assert exc_info.value.http_status == status_code
     assert exc_info.value.request_id == "req-123"
 
-    sender.close()
+    client.close()
 
 
-def test_direct_report_raises_timeout_error_after_retries():
+def test_direct_reports_api_raises_timeout_error_after_retries():
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(201, headers={"retryIn": "0"})
 
     transport = httpx.MockTransport(handler)
-    sender = HTTPRequestSender(
+    client = DirectClient(
         token="token",
         client_login="login",
         client=httpx.Client(transport=transport),
         async_client=httpx.AsyncClient(transport=transport),
     )
-    report = YDirectReport(request=make_request(), sender=sender, max_retries=1)
 
     with pytest.raises(YandexTimeoutError):
-        report.fetch_sync()
+        client.reports.fetch_sync(make_request(), max_retries=1)
 
-    sender.close()
+    client.close()

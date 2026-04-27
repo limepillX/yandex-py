@@ -2,9 +2,8 @@ import os
 
 import pytest
 
-from yandex_py.constants import SANDBOX_URL
-from yandex_py.direct import HTTPRequestSender
-from yandex_py.direct.reports import YDirectReport
+from yandex_py.direct import DirectClient
+from yandex_py.direct.constants import SANDBOX_URL
 from yandex_py.direct.reports.types import (
     DateRangeType,
     FieldName,
@@ -26,7 +25,7 @@ def sender():
     if not client_login:
         pytest.skip("YANDEX_DIRECT_CLIENT_LOGIN не задан")
 
-    return HTTPRequestSender(token=token, client_login=client_login)
+    return DirectClient(token=token, client_login=client_login, base_url=SANDBOX_URL)
 
 
 @pytest.fixture
@@ -45,8 +44,7 @@ def basic_request():
 
 @pytest.mark.integration
 def test_fetch_report_sync(sender, basic_request):
-    report = YDirectReport(request=basic_request, sender=sender)
-    rows = report.fetch_sync()
+    rows = sender.reports.fetch_sync(basic_request)
 
     assert isinstance(rows, list)
     if rows:
@@ -56,8 +54,7 @@ def test_fetch_report_sync(sender, basic_request):
 
 @pytest.mark.integration
 async def test_fetch_report_async(sender, basic_request):
-    report = YDirectReport(request=basic_request, sender=sender)
-    rows = await report.fetch()
+    rows = await sender.reports.fetch(basic_request)
 
     assert isinstance(rows, list)
     if rows:

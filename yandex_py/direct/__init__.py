@@ -1,9 +1,9 @@
-from .request_sender import HTTPRequestSender
-from .reports import ReportRow, YDirectReport, parse_report
+from .client import DirectClient
+from .reports import DirectReportsAPI, ReportRow, parse_report
 
 __all__ = [
-    "HTTPRequestSender",
-    "YDirectReport",
+    "DirectClient",
+    "DirectReportsAPI",
     "parse_report",
     "ReportRow",
 ]
