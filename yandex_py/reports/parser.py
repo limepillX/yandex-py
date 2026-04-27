@@ -2,7 +2,7 @@ import csv
 import io
 
 from yandex_py.constants import MISSING_VALUE
-from yandex_py.reports.schemas.fields import FieldName
+from yandex_py.reports.types.fields import FieldName
 
 ReportRow = dict[FieldName, str | None]
 

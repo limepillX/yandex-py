@@ -3,8 +3,8 @@ import time
 
 from yandex_py.constants import REPORTS_SERVICE
 from yandex_py.reports.parser import ReportRow, parse_report
-from yandex_py.reports.schemas.headers import AcceptLanguage, ProcessingMode
-from yandex_py.reports.schemas.request import ReportRequest
+from yandex_py.reports.types.headers import AcceptLanguage, ProcessingMode
+from yandex_py.reports.types.request import ReportRequest
 from yandex_py.request_sender.request_sender import HTTPRequestSender 
 
 

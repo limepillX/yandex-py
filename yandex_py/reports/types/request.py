@@ -3,8 +3,8 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from yandex_py.reports.schemas.fields import FieldName
-from yandex_py.reports.schemas.time_period import DateRangeType
+from yandex_py.reports.types.fields import FieldName
+from yandex_py.reports.types.time_period import DateRangeType
 
 
 class ReportType(str, Enum):
