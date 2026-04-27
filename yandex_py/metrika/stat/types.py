@@ -26,6 +26,7 @@ def _serialize_value(value: Any) -> str:
 class BaseStatQuery(BaseModel):
     ids: list[int]
     accuracy: str | None = None
+    attribution: str | None = None
     callback: str | None = None
     date1: str | date | None = None
     date2: str | date | None = None

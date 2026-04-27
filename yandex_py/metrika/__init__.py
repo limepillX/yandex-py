@@ -1,3 +1,4 @@
 from .client import MetrikaClient
+from .management.types import CounterGoal
 
-__all__ = ["MetrikaClient"]
+__all__ = ["CounterGoal", "MetrikaClient"]

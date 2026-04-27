@@ -4,6 +4,7 @@ import httpx
 
 from yandex_py.core.transport import HTTPTransport
 from yandex_py.metrika.constants import API_URL
+from yandex_py.metrika.management.client import MetrikaManagementAPI
 from yandex_py.metrika.stat.client import MetrikaStatAPI
 
 
@@ -24,6 +25,7 @@ class MetrikaClient:
             client=client,
             async_client=async_client,
         )
+        self.management = MetrikaManagementAPI(self._transport)
         self.stat = MetrikaStatAPI(self._transport)
 
     def close(self) -> None:
