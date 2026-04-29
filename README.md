@@ -1,4 +1,5 @@
 # yandex_py
+https://pypi.org/project/yandex_py/
 
 Python-клиент для Yandex API на базе `httpx` и `pydantic`.
 
