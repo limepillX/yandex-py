@@ -4,7 +4,7 @@ Python-клиент для Yandex API на базе `httpx` и `pydantic`.
 
 Библиотека организована по продуктам и сейчас покрывает:
 
-- `yandex_py.direct` - отчеты Yandex Direct
+- `yandex_py.direct.reports` - отчеты Yandex Direct
 - `yandex_py.metrika.stat` - API статистики Yandex Metrika
 - `yandex_py.metrika.management` - API управления счетчиками и целями Yandex Metrika
 
