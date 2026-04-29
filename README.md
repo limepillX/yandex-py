@@ -1,5 +1,7 @@
 # yandex_py
-https://pypi.org/project/yandex_py/
+[Pypi](https://pypi.org/project/yandex_py/) — [Github](https://github.com/limepillX/)
+
+
 
 Python-клиент для Yandex API на базе `httpx` и `pydantic`.
 
