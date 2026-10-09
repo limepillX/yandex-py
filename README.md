@@ -8,6 +8,7 @@ Python-клиент для Yandex API на базе `httpx` и `pydantic`.
 Библиотека организована по продуктам и сейчас покрывает:
 
 - `yandex_py.direct.reports` - отчеты Yandex Direct
+- `yandex_py.direct.campaigns` - кампании Yandex Direct (`campaigns.get`)
 - `yandex_py.metrika.stat` - API статистики Yandex Metrika
 - `yandex_py.metrika.management` - API управления счетчиками и целями Yandex Metrika
 
@@ -61,6 +62,23 @@ for row in rows:
 ```
 
 Синхронный вариант использует `client.reports.fetch_sync(request)`.
+
+### Yandex Direct: кампании
+
+```python
+from yandex_py.direct import DirectClient
+
+with DirectClient(token="your_token", client_login="your_client_login") as client:
+    campaigns = client.campaigns.get_sync(states=["ON", "SUSPENDED"])
+
+for campaign in campaigns:
+    print(campaign.id, campaign.name, campaign.state, campaign.daily_budget)
+```
+
+Пагинация по `LimitedBy` выполняется автоматически. Ошибки в теле ответа с HTTP 200
+(`{"error": {...}}`) тоже поднимаются как исключения (например, код 53 - `AuthenticationError`,
+152 - `RateLimitError`). `get_page_sync(...).units` - баллы из заголовка `Units`
+(`spent`, `remaining`, `limit`). Асинхронный вариант: `await client.campaigns.get(...)`.
 
 ### Yandex Metrika Stat API
 
@@ -120,6 +138,10 @@ from yandex_py.metrika import MetrikaClient
 
 - `reports.fetch_sync(...)`
 - `reports.fetch(...)`
+- `campaigns.get_sync(...)`
+- `campaigns.get(...)`
+- `campaigns.get_page_sync(...)`
+- `campaigns.get_page(...)`
 
 `MetrikaClient`:
 

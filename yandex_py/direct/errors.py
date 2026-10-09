@@ -11,13 +11,18 @@ from yandex_py.core.errors import (
 )
 
 
-def raise_direct_api_error(response: Any) -> None:
-    request_id = response.headers.get("RequestId")
+BODY_ERROR_CLASSES: dict[int, type[YandexAPIError]] = {
+    52: AuthenticationError,
+    53: AuthenticationError,
+    54: AuthenticationError,
+    56: RateLimitError,
+    152: RateLimitError,
+    1000: ServerError,
+}
 
-    try:
-        payload = response.json()
-    except ValueError:
-        payload = None
+
+def _error_kwargs(response: Any, payload: Any) -> dict[str, Any]:
+    request_id = response.headers.get("RequestId")
 
     error_payload = payload.get("error", payload) if isinstance(payload, dict) else None
     message = response.text
@@ -32,7 +37,7 @@ def raise_direct_api_error(response: Any) -> None:
         )
         code = error_payload.get("error_code") or error_payload.get("code")
 
-    error_kwargs = {
+    return {
         "message": message,
         "product": "direct",
         "http_status": response.status_code,
@@ -40,6 +45,15 @@ def raise_direct_api_error(response: Any) -> None:
         "request_id": request_id,
         "raw": payload if payload is not None else response.text,
     }
+
+
+def raise_direct_api_error(response: Any) -> None:
+    try:
+        payload = response.json()
+    except ValueError:
+        payload = None
+
+    error_kwargs = _error_kwargs(response, payload)
 
     if response.status_code in (400, 422):
         raise RequestValidationError(**error_kwargs)
@@ -50,3 +64,14 @@ def raise_direct_api_error(response: Any) -> None:
     if response.status_code >= 500:
         raise ServerError(**error_kwargs)
     raise YandexAPIError(**error_kwargs)
+
+
+def raise_for_direct_body(response: Any, payload: Any) -> None:
+    error = payload.get("error") if isinstance(payload, dict) else None
+    if not isinstance(error, dict):
+        return
+
+    error_kwargs = _error_kwargs(response, payload)
+    error_kwargs["request_id"] = error.get("request_id") or error_kwargs["request_id"]
+    error_class = BODY_ERROR_CLASSES.get(error_kwargs["code"], RequestValidationError)
+    raise error_class(**error_kwargs)
