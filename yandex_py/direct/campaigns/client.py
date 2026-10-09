@@ -34,10 +34,25 @@ class DirectCampaignsAPI:
         ids: Sequence[int] | None = None,
         types: Sequence[str] | None = None,
         field_names: Sequence[str] = DEFAULT_FIELD_NAMES,
+        text_campaign_field_names: Sequence[str] | None = None,
+        unified_campaign_field_names: Sequence[str] | None = None,
+        text_campaign_placement_types_field_names: Sequence[str] | None = None,
+        unified_campaign_placement_types_field_names: Sequence[str] | None = None,
         limit: int = PAGE_LIMIT,
         offset: int = 0,
     ) -> CampaignsPage:
-        body = self._body(states, ids, types, field_names, limit, offset)
+        body = self._body(
+            states,
+            ids,
+            types,
+            field_names,
+            limit,
+            offset,
+            text_campaign_field_names,
+            unified_campaign_field_names,
+            text_campaign_placement_types_field_names,
+            unified_campaign_placement_types_field_names,
+        )
         response = self._transport.post(CAMPAIGNS_SERVICE, body, self._headers())
         return self._parse(response)
 
@@ -48,10 +63,25 @@ class DirectCampaignsAPI:
         ids: Sequence[int] | None = None,
         types: Sequence[str] | None = None,
         field_names: Sequence[str] = DEFAULT_FIELD_NAMES,
+        text_campaign_field_names: Sequence[str] | None = None,
+        unified_campaign_field_names: Sequence[str] | None = None,
+        text_campaign_placement_types_field_names: Sequence[str] | None = None,
+        unified_campaign_placement_types_field_names: Sequence[str] | None = None,
         limit: int = PAGE_LIMIT,
         offset: int = 0,
     ) -> CampaignsPage:
-        body = self._body(states, ids, types, field_names, limit, offset)
+        body = self._body(
+            states,
+            ids,
+            types,
+            field_names,
+            limit,
+            offset,
+            text_campaign_field_names,
+            unified_campaign_field_names,
+            text_campaign_placement_types_field_names,
+            unified_campaign_placement_types_field_names,
+        )
         response = await self._transport.post_async(
             CAMPAIGNS_SERVICE, body, self._headers()
         )
@@ -64,6 +94,10 @@ class DirectCampaignsAPI:
         ids: Sequence[int] | None = None,
         types: Sequence[str] | None = None,
         field_names: Sequence[str] = DEFAULT_FIELD_NAMES,
+        text_campaign_field_names: Sequence[str] | None = None,
+        unified_campaign_field_names: Sequence[str] | None = None,
+        text_campaign_placement_types_field_names: Sequence[str] | None = None,
+        unified_campaign_placement_types_field_names: Sequence[str] | None = None,
     ) -> list[Campaign]:
         campaigns: list[Campaign] = []
         offset = 0
@@ -73,6 +107,10 @@ class DirectCampaignsAPI:
                 ids=ids,
                 types=types,
                 field_names=field_names,
+                text_campaign_field_names=text_campaign_field_names,
+                unified_campaign_field_names=unified_campaign_field_names,
+                text_campaign_placement_types_field_names=text_campaign_placement_types_field_names,
+                unified_campaign_placement_types_field_names=unified_campaign_placement_types_field_names,
                 offset=offset,
             )
             campaigns.extend(page.campaigns)
@@ -87,6 +125,10 @@ class DirectCampaignsAPI:
         ids: Sequence[int] | None = None,
         types: Sequence[str] | None = None,
         field_names: Sequence[str] = DEFAULT_FIELD_NAMES,
+        text_campaign_field_names: Sequence[str] | None = None,
+        unified_campaign_field_names: Sequence[str] | None = None,
+        text_campaign_placement_types_field_names: Sequence[str] | None = None,
+        unified_campaign_placement_types_field_names: Sequence[str] | None = None,
     ) -> list[Campaign]:
         campaigns: list[Campaign] = []
         offset = 0
@@ -96,6 +138,10 @@ class DirectCampaignsAPI:
                 ids=ids,
                 types=types,
                 field_names=field_names,
+                text_campaign_field_names=text_campaign_field_names,
+                unified_campaign_field_names=unified_campaign_field_names,
+                text_campaign_placement_types_field_names=text_campaign_placement_types_field_names,
+                unified_campaign_placement_types_field_names=unified_campaign_placement_types_field_names,
                 offset=offset,
             )
             campaigns.extend(page.campaigns)
@@ -111,6 +157,10 @@ class DirectCampaignsAPI:
         field_names: Sequence[str],
         limit: int,
         offset: int,
+        text_campaign_field_names: Sequence[str] | None,
+        unified_campaign_field_names: Sequence[str] | None,
+        text_campaign_placement_types_field_names: Sequence[str] | None,
+        unified_campaign_placement_types_field_names: Sequence[str] | None,
     ) -> dict[str, Any]:
         criteria = {
             key: list(value)
@@ -122,6 +172,22 @@ class DirectCampaignsAPI:
             "params": {
                 "SelectionCriteria": criteria,
                 "FieldNames": list(field_names),
+                **{
+                    key: list(value)
+                    for key, value in (
+                        ("TextCampaignFieldNames", text_campaign_field_names),
+                        ("UnifiedCampaignFieldNames", unified_campaign_field_names),
+                        (
+                            "TextCampaignSearchStrategyPlacementTypesFieldNames",
+                            text_campaign_placement_types_field_names,
+                        ),
+                        (
+                            "UnifiedCampaignSearchStrategyPlacementTypesFieldNames",
+                            unified_campaign_placement_types_field_names,
+                        ),
+                    )
+                    if value is not None
+                },
                 "Page": {"Limit": limit, "Offset": offset},
             },
         }

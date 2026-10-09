@@ -120,7 +120,9 @@ def test_200_with_error_body(code, expected):
     client = make_client(
         lambda request: httpx.Response(
             200,
-            json={"error": {"error_code": code, "error_string": "x", "request_id": "r9"}},
+            json={
+                "error": {"error_code": code, "error_string": "x", "request_id": "r9"}
+            },
         )
     )
     with pytest.raises(expected) as exc_info:
@@ -166,7 +168,10 @@ async def test_async_error():
 
 @pytest.mark.parametrize(
     ("kwargs", "login", "operator"),
-    [({}, None, None), ({"client_login": "c", "use_operator_units": True}, "c", "true")],
+    [
+        ({}, None, None),
+        ({"client_login": "c", "use_operator_units": True}, "c", "true"),
+    ],
 )
 def test_agency_headers(kwargs, login, operator):
     seen = {}
@@ -181,3 +186,94 @@ def test_agency_headers(kwargs, login, operator):
 
     assert seen.get("client-login") == login
     assert seen.get("use-operator-units") == operator
+
+
+TYPED_KEYS = {
+    "text_campaign_field_names": "TextCampaignFieldNames",
+    "unified_campaign_field_names": "UnifiedCampaignFieldNames",
+    "text_campaign_placement_types_field_names": (
+        "TextCampaignSearchStrategyPlacementTypesFieldNames"
+    ),
+    "unified_campaign_placement_types_field_names": (
+        "UnifiedCampaignSearchStrategyPlacementTypesFieldNames"
+    ),
+}
+
+
+def test_typed_field_names_absent_by_default():
+    seen = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.update(json.loads(request.content)["params"])
+        return httpx.Response(200, json={"result": {}})
+
+    make_client(handler).campaigns.get_sync()
+
+    assert not set(TYPED_KEYS.values()) & set(seen)
+
+
+@pytest.mark.parametrize("arg", list(TYPED_KEYS))
+def test_typed_field_names_sent_as_is(arg):
+    seen = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.update(json.loads(request.content)["params"])
+        return httpx.Response(200, json={"result": {}})
+
+    make_client(handler).campaigns.get_sync(**{arg: ["BiddingStrategy"]})
+
+    assert seen[TYPED_KEYS[arg]] == ["BiddingStrategy"]
+    assert set(TYPED_KEYS.values()) & set(seen) == {TYPED_KEYS[arg]}
+
+
+def test_parse_typed_campaigns():
+    strategy = {
+        "BiddingStrategy": {
+            "Search": {
+                "BiddingStrategyType": "WB_MAXIMUM_CLICKS",
+                "PlacementTypes": {
+                    "SearchResults": "YES",
+                    "Maps": "NO",
+                    "SearchOrganizationList": "YES",
+                },
+            },
+            "Network": {"BiddingStrategyType": "SERVING_OFF"},
+        }
+    }
+    body = {
+        "result": {
+            "Campaigns": [
+                campaign(1, TextCampaign=strategy),
+                campaign(2, UnifiedCampaign=strategy),
+                campaign(3),
+            ]
+        }
+    }
+    client = make_client(lambda request: httpx.Response(200, json=body))
+
+    text, unified, plain = client.campaigns.get_sync()
+
+    for typed in (text.text_campaign, unified.unified_campaign):
+        search = typed.bidding_strategy.search
+        assert search.bidding_strategy_type == "WB_MAXIMUM_CLICKS"
+        assert search.placement_types.search_results == "YES"
+        assert search.placement_types.maps == "NO"
+        assert search.placement_types.search_organization_list == "YES"
+        assert search.placement_types.product_gallery is None
+        assert typed.bidding_strategy.network.bidding_strategy_type == "SERVING_OFF"
+    assert text.unified_campaign is None and unified.text_campaign is None
+    assert plain.text_campaign is None
+
+
+async def test_async_get_forwards_typed_field_names():
+    seen = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.update(json.loads(request.content)["params"])
+        return httpx.Response(200, json={"result": {}})
+
+    await make_client(handler).campaigns.get(
+        unified_campaign_placement_types_field_names=["Maps"]
+    )
+
+    assert seen["UnifiedCampaignSearchStrategyPlacementTypesFieldNames"] == ["Maps"]

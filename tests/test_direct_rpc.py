@@ -35,7 +35,8 @@ def test_unwrap_result_returns_result():
 )
 def test_unwrap_result_raises_body_error(code, expected):
     response = httpx.Response(
-        200, json={"error": {"error_code": code, "error_string": "x", "request_id": "r1"}}
+        200,
+        json={"error": {"error_code": code, "error_string": "x", "request_id": "r1"}},
     )
     with pytest.raises(expected) as exc_info:
         unwrap_result(response)

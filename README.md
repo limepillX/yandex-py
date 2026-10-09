@@ -75,6 +75,20 @@ for campaign in campaigns:
     print(campaign.id, campaign.name, campaign.state, campaign.daily_budget)
 ```
 
+Настройки стратегий (значения уходят в запрос как есть, без параметров ключ не отправляется):
+
+```python
+campaigns = client.campaigns.get_sync(
+    types=["TEXT_CAMPAIGN"],
+    text_campaign_field_names=["BiddingStrategy"],
+    text_campaign_placement_types_field_names=["SearchResults", "ProductGallery"],
+)
+print(campaigns[0].text_campaign.bidding_strategy.search.placement_types)
+```
+
+Для единых кампаний: `unified_campaign_field_names` и
+`unified_campaign_placement_types_field_names` (дополнительно `Maps`, `SearchOrganizationList`).
+
 Агентство: токен представителя агентства + `client_login` клиента-рекламодателя; `use_operator_units=True`
 тратит баллы агентства. `client_login` можно не указывать (например, для сервиса AgencyClients).
 
