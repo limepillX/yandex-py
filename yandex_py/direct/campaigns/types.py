@@ -15,17 +15,20 @@ class DailyBudget(BaseModel):
 
 
 class Campaign(BaseModel):
-    """Кампания; type/state/status — строки как в API, без enum."""
+    """Кампания; type/state/status — строки как в API, без enum.
+
+    Кроме id все поля необязательны: API возвращает только запрошенные field_names.
+    """
 
     model_config = ConfigDict(extra="allow", populate_by_name=True)
 
     id: int = Field(alias="Id")
-    name: str = Field(alias="Name")
-    type: str = Field(alias="Type")
-    state: str = Field(alias="State")
-    status: str = Field(alias="Status")
-    status_payment: str = Field(alias="StatusPayment")
-    status_clarification: str = Field(default="", alias="StatusClarification")
+    name: str | None = Field(default=None, alias="Name")
+    type: str | None = Field(default=None, alias="Type")
+    state: str | None = Field(default=None, alias="State")
+    status: str | None = Field(default=None, alias="Status")
+    status_payment: str | None = Field(default=None, alias="StatusPayment")
+    status_clarification: str | None = Field(default=None, alias="StatusClarification")
     daily_budget: DailyBudget | None = Field(default=None, alias="DailyBudget")
 
 

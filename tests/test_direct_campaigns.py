@@ -44,7 +44,7 @@ def test_request_body_and_headers():
     client = make_client(handler)
     client.campaigns.get_page_sync(states=["ON"], limit=5)
 
-    assert seen["url"].endswith("/campaigns")
+    assert seen["url"].endswith("/json/v501/campaigns")
     assert seen["body"]["method"] == "get"
     params = seen["body"]["params"]
     assert params["SelectionCriteria"] == {"States": ["ON"]}
@@ -64,23 +64,25 @@ def test_empty_selection_criteria():
     assert make_client(handler).campaigns.get_sync() == []
 
 
-def test_parse_daily_budget_and_unknown_values():
+def test_parse_budget_unknown_values_and_partial_fields():
     body = {
         "result": {
             "Campaigns": [
                 campaign(1, DailyBudget={"Amount": 300000000, "Mode": "STANDARD"}),
-                campaign(2),
+                campaign(2, DailyBudget=None),
+                {"Id": 3},
             ]
         }
     }
     client = make_client(lambda request: httpx.Response(200, json=body))
 
-    first, second = client.campaigns.get_sync()
+    first, second, partial = client.campaigns.get_sync()
 
+    assert first.type == "FUTURE_TYPE"
     assert first.daily_budget.amount == 300000000
     assert first.daily_budget.mode == "STANDARD"
-    assert first.type == "FUTURE_TYPE"
     assert second.daily_budget is None
+    assert partial.id == 3 and partial.name is None
 
 
 def test_pagination_uses_limited_by_as_offset():

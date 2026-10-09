@@ -12,11 +12,11 @@ from yandex_py.core.errors import (
 
 
 BODY_ERROR_CLASSES: dict[int, type[YandexAPIError]] = {
-    52: AuthenticationError,
+    52: ServerError,
     53: AuthenticationError,
     54: AuthenticationError,
-    56: RateLimitError,
     152: RateLimitError,
+    506: RateLimitError,
     1000: ServerError,
 }
 

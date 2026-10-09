@@ -25,7 +25,13 @@ def test_unwrap_result_returns_result():
 
 @pytest.mark.parametrize(
     ("code", "expected"),
-    [(53, AuthenticationError), (152, RateLimitError), (1000, ServerError)],
+    [
+        (52, ServerError),
+        (53, AuthenticationError),
+        (152, RateLimitError),
+        (506, RateLimitError),
+        (1000, ServerError),
+    ],
 )
 def test_unwrap_result_raises_body_error(code, expected):
     response = httpx.Response(
