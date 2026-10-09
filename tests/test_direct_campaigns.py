@@ -162,3 +162,22 @@ async def test_async_error():
     )
     with pytest.raises(AuthenticationError):
         await client.campaigns.get()
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "login", "operator"),
+    [({}, None, None), ({"client_login": "c", "use_operator_units": True}, "c", "true")],
+)
+def test_agency_headers(kwargs, login, operator):
+    seen = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.update(request.headers)
+        return httpx.Response(200, json={"result": {}})
+
+    transport = httpx.MockTransport(handler)
+    client = DirectClient(token="t", client=httpx.Client(transport=transport), **kwargs)
+    client.campaigns.get_sync()
+
+    assert seen.get("client-login") == login
+    assert seen.get("use-operator-units") == operator

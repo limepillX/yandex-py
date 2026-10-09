@@ -12,19 +12,23 @@ class DirectClient:
     def __init__(
         self,
         token: str,
-        client_login: str,
+        client_login: str | None = None,
         *,
+        use_operator_units: bool = False,
         base_url: str = API_URL,
         timeout: float | httpx.Timeout = 30.0,
         client: httpx.Client | None = None,
         async_client: httpx.AsyncClient | None = None,
     ):
+        auth_headers = {"Authorization": f"Bearer {token}"}
+        if client_login:
+            auth_headers["Client-Login"] = client_login
+        if use_operator_units:
+            auth_headers["Use-Operator-Units"] = "true"
+
         self._transport = HTTPTransport(
             base_url=base_url,
-            auth_headers={
-                "Authorization": f"Bearer {token}",
-                "Client-Login": client_login,
-            },
+            auth_headers=auth_headers,
             timeout=timeout,
             client=client,
             async_client=async_client,

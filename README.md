@@ -75,6 +75,9 @@ for campaign in campaigns:
     print(campaign.id, campaign.name, campaign.state, campaign.daily_budget)
 ```
 
+Агентство: токен представителя агентства + `client_login` клиента-рекламодателя; `use_operator_units=True`
+тратит баллы агентства. `client_login` можно не указывать (например, для сервиса AgencyClients).
+
 Пагинация по `LimitedBy` выполняется автоматически. Ошибки в теле ответа с HTTP 200
 (`{"error": {...}}`) тоже поднимаются как исключения (например, код 53 - `AuthenticationError`,
 152 - `RateLimitError`). `get_page_sync(...).units` - баллы из заголовка `Units`
