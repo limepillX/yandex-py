@@ -3,8 +3,10 @@ from __future__ import annotations
 import httpx
 
 from yandex_py.core.transport import HTTPTransport
+from yandex_py.direct.bid_modifiers.client import DirectBidModifiersAPI
 from yandex_py.direct.campaigns.client import DirectCampaignsAPI
 from yandex_py.direct.constants import API_URL
+from yandex_py.direct.dictionaries.client import DirectDictionariesAPI
 from yandex_py.direct.reports.client import DirectReportsAPI
 
 
@@ -35,6 +37,8 @@ class DirectClient:
         )
         self.reports = DirectReportsAPI(self._transport)
         self.campaigns = DirectCampaignsAPI(self._transport)
+        self.bid_modifiers = DirectBidModifiersAPI(self._transport)
+        self.dictionaries = DirectDictionariesAPI(self._transport)
 
     def close(self) -> None:
         self._transport.close()
